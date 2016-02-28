@@ -3,8 +3,8 @@ require 'rake/testtask'
 require 'rake/clean'
 
 vlibs = ["viennacl"]
-olibs = ["ocl"]
-elibs = vlibs + olibs
+other_libs = ["ocl"]
+elibs = vlibs + other_libs
 elibs.each{|s|
   Rake::ExtensionTask.new s do |ext|
     ext.lib_dir = "lib/viennacl"
@@ -17,10 +17,9 @@ namespace :swg do
       sh "swig -c++ -ruby -Wall ext/#{f}/#{f}.i"
     end
   }
-  olibs.each{|f|
+  other_libs.each{|f|
     task f do
-      sh "swig -c++ -ruby -Wall ext/#{f}/#{f}.i"
-      sh "mv ext/#{f}/#{f}_wrap.cxx ext/#{f}/#{f}_wrap.inc"
+      sh "swig -c++ -ruby -Wall -o ext/#{f}/#{f}_wrap.inc ext/#{f}/#{f}.i"
     end
   }
 end
