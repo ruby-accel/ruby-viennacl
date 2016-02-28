@@ -1,8 +1,13 @@
 %module viennacl
 
 %{
+#include <cstdint>
 #include "viennacl/vector.hpp"
+#include "viennacl/linalg/inner_prod.hpp"
+#include "viennacl/linalg/norm_1.hpp"
 #include "viennacl/linalg/norm_2.hpp"
+#include "viennacl/linalg/norm_inf.hpp"
+#include "viennacl/matrix.hpp"
 
 namespace RubyViennacl {
   using namespace viennacl;
@@ -15,7 +20,7 @@ namespace RubyViennacl {
 
 namespace RubyViennacl {
   template<typename T>
-  class vector{
+  class vector {
   public:
     vector();
     vector(size_t);
@@ -26,6 +31,11 @@ namespace RubyViennacl {
     bool empty();
 
     %extend {
+
+      void assign(vector<T>& v) {
+        (*$self) = v;
+      }
+
       T __getitem__(size_t i) {
         return (*$self)(i);
       }
@@ -50,15 +60,28 @@ namespace RubyViennacl {
         return (*$self) / v;
       }
 
-      vector<T> __mul__(vector<T> &v){
+      vector<T> __mul__(const vector<T>& v){
         return viennacl::linalg::element_prod(*$self, v);
       }
-      vector<T> div(vector<T> &v){
+
+      vector<T> div(const vector<T>& v){
         return viennacl::linalg::element_div(*$self, v);
       }
 
-      T norm2(){
+      T inner_prod(const vector<T>& v){
+        return viennacl::linalg::inner_prod(*$self, v);
+      }
+
+      T norm_1(){
+        return viennacl::linalg::norm_1(*$self);
+      }
+
+      T norm_2(){
         return viennacl::linalg::norm_2(*$self);
+      }
+
+      T norm_inf(){
+        return viennacl::linalg::norm_inf(*$self);
       }
 
       vector<T> sin(){
@@ -113,5 +136,18 @@ namespace RubyViennacl {
   };
 
   %template(VectorDouble) vector<double>;
+  //  %template(VectorSFloat) vector<float>;
+  //  %template(VectorInt) vector<int>;
+  //  %template(VectorShort) vector<short>;
+  //  %template(VectorChar) vector<char>;
   vector<double> sin(const vector<double>& v);
+
+  template<class T>
+  class matrix {
+  public:
+    matrix(size_t, size_t);
+    ~matrix();
+  };
+  %template(MatrixDouble) matrix<double>;
+
 };
