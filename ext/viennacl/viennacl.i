@@ -233,12 +233,40 @@ namespace RubyViennacl {
 
     %extend {
 
+      T __getitem__(size_t i, size_t j){
+        return (*$self)(i,j);
+      }
+
+      void __setitem__(size_t i, size_t j, const T x){
+        (*$self)(i,j) = x;
+      }
+
       vector<T> __mul__(const vector<T>& v){
         return viennacl::linalg::prod((*$self), v);
       }
 
       vector<T> trans_prod(const vector<T>& v){
         return viennacl::linalg::prod(viennacl::trans(*$self), v);
+      }
+
+      matrix<T> __add__(const matrix<T>& m){
+        return (*$self) + m;
+      }
+
+      matrix<T> __sub__(const matrix<T>& m){
+        return (*$self) + m;
+      }
+
+      matrix<T> __mul__(const matrix<T>& m){
+        return viennacl::linalg::prod((*$self), m);
+      }
+
+      matrix<T> __mul__(const T x){
+        return (*$self) * x;
+      }
+
+      matrix<T> trans(){
+        return viennacl::trans(*$self);
       }
 
     }
