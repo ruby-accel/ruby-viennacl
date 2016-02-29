@@ -1,21 +1,92 @@
 %module viennacl
 
 %{
-#include <cstdint>
+  // #include <cstdint>
+#include <cmath>
 #include "viennacl/vector.hpp"
 #include "viennacl/linalg/inner_prod.hpp"
 #include "viennacl/linalg/norm_1.hpp"
 #include "viennacl/linalg/norm_2.hpp"
 #include "viennacl/linalg/norm_inf.hpp"
 #include "viennacl/matrix.hpp"
+#include "viennacl/linalg/matrix_operations.hpp"
+#include "viennacl/linalg/prod.hpp"
 
 namespace RubyViennacl {
   using namespace viennacl;
+
+  using std::sin;
+  using std::cos;
+  using std::tan;
+  using std::asin;
+  using std::acos;
+
   template<typename T>
   vector<T> sin(const vector<T>& v){
     return linalg::element_sin(v);
   }
+  template<typename T>
+  vector<T> cos(const vector<T>& v){
+    return viennacl::linalg::element_cos(v);
+  }
+  template<typename T>
+  vector<T> tan(const vector<T>& v){
+    return viennacl::linalg::element_tan(v);
+  }
+  template<typename T>
+  vector<T> asin(const vector<T>& v){
+    return viennacl::linalg::element_asin(v);
+  }
+  template<typename T>
+  vector<T> acos(const vector<T>& v){
+    return viennacl::linalg::element_acos(v);
+  }
+  template<typename T>
+  vector<T> atan(const vector<T>& v){
+    return viennacl::linalg::element_atan(v);
+  }
+  template<typename T>
+  vector<T> sinh(const vector<T>& v){
+    return viennacl::linalg::element_sinh(v);
+  }
+  template<typename T>
+  vector<T> cosh(const vector<T>& v){
+    return viennacl::linalg::element_cosh(v);
+  }
+  template<typename T>
+  vector<T> tanh(const vector<T>& v){
+    return viennacl::linalg::element_tanh(v);
+  }
+  template<typename T>
+  vector<T> exp(const vector<T>& v){
+    return viennacl::linalg::element_exp(v);
+  }
+  template<typename T>
+  vector<T> log(const vector<T>& v){
+    return viennacl::linalg::element_log(v);
+  }
+  template<typename T>
+  vector<T> log10(const vector<T>& v){
+    return viennacl::linalg::element_log10(v);
+  }
+  template<typename T>
+  vector<T> sqrt(const vector<T>& v){
+    return viennacl::linalg::element_sqrt(v);
+  }
+  template<typename T>
+  vector<T> pow(const vector<T>& v1, const vector<T> &v2){
+    return viennacl::linalg::element_pow(v1, v2);
+  }
+  template<typename T>
+  vector<T> ceil(const vector<T>& v){
+    return viennacl::linalg::element_ceil(v);
+  }
+  template<typename T>
+  vector<T> floor(const vector<T>& v){
+    return viennacl::linalg::element_floor(v);
+  }
 };
+
 %}
 
 namespace RubyViennacl {
@@ -32,11 +103,11 @@ namespace RubyViennacl {
 
     %extend {
 
-      void assign(vector<T>& v) {
+      void assign(const vector<T>& v) {
         (*$self) = v;
       }
 
-      T __getitem__(size_t i) {
+      T __getitem__(const size_t i) {
         return (*$self)(i);
       }
 
@@ -44,19 +115,19 @@ namespace RubyViennacl {
         (*$self)(i) = v;
       }
 
-      vector<T> __add__(vector<T>&v){
+      vector<T> __add__(const vector<T>&v){
         return (*$self) + v;
       }
 
-      vector<T> __sub__(vector<T>&v){
+      vector<T> __sub__(const vector<T>&v){
         return (*$self) - v;
       }
 
-      vector<T> __mul__(T &v){
+      vector<T> __mul__(const T &v){
         return (*$self) * v;
       }
 
-      vector<T> __div__(T &v){
+      vector<T> __div__(const T &v){
         return (*$self) / v;
       }
 
@@ -72,16 +143,25 @@ namespace RubyViennacl {
         return viennacl::linalg::inner_prod(*$self, v);
       }
 
-      T norm_1(){
+      double norm_1(){
         return viennacl::linalg::norm_1(*$self);
       }
 
-      T norm_2(){
+      double norm_2(){
         return viennacl::linalg::norm_2(*$self);
       }
 
-      T norm_inf(){
+      double norm_inf(){
         return viennacl::linalg::norm_inf(*$self);
+      }
+
+      /*
+      vector<T> abs(){
+        return viennacl::linalg::element_abs(*$self);
+      }
+      */
+      vector<T> fabs(){
+        return viennacl::linalg::element_fabs(*$self);
       }
 
       vector<T> sin(){
@@ -123,7 +203,7 @@ namespace RubyViennacl {
       vector<T> sqrt(){
         return viennacl::linalg::element_sqrt(*$self);
       }
-      vector<T> pow(vector<T> &v){
+      vector<T> pow(const vector<T> &v){
         return viennacl::linalg::element_pow(*$self, v);
       }
       vector<T> ceil(){
@@ -137,16 +217,31 @@ namespace RubyViennacl {
 
   %template(VectorDouble) vector<double>;
   //  %template(VectorSFloat) vector<float>;
+  //  %template(VectorLongInt) vector<long int>;
   //  %template(VectorInt) vector<int>;
-  //  %template(VectorShort) vector<short>;
-  //  %template(VectorChar) vector<char>;
+  //  %template(VectorShortInt) vector<short>;
+
   vector<double> sin(const vector<double>& v);
+  double sin(double);
+  vector<double> cos(const vector<double>& v);
 
   template<class T>
   class matrix {
   public:
     matrix(size_t, size_t);
     ~matrix();
+
+    %extend {
+
+      vector<T> __mul__(const vector<T>& v){
+        return viennacl::linalg::prod((*$self), v);
+      }
+
+      vector<T> trans_prod(const vector<T>& v){
+        return viennacl::linalg::prod(viennacl::trans(*$self), v);
+      }
+
+    }
   };
   %template(MatrixDouble) matrix<double>;
 
