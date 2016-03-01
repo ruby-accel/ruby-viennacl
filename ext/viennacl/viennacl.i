@@ -26,8 +26,25 @@ namespace RubyViennacl {
 %include "vector.i"
 
 namespace RubyViennacl {
+  namespace linalg {
+    %rename(LowerTag) lower_tag;
+    struct lower_tag {
+      static const char* name();
+    };
+    %rename(UnitLowerTag) unit_lower_tag;
+    struct unit_lower_tag {
+      static const char* name();
+    };
+    %rename(UpperTag) upper_tag;
+    struct upper_tag {
+      static const char* name();
+    };
+    %rename(UnitUpperTag) unit_lower_tag;
+    struct unit_upper_tag {
+      static const char* name();
+    };
+  };
 
-  //  %nodefaultctor matrix_expression;
   template<class LHS,class RHS, OP >
   class matrix_expression{
   public:
