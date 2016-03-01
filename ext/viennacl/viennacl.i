@@ -12,6 +12,9 @@
 #include "viennacl/matrix.hpp"
 #include "viennacl/linalg/matrix_operations.hpp"
 #include "viennacl/linalg/prod.hpp"
+#include "viennacl/linalg/direct_solve.hpp"
+#include "viennacl/linalg/bicgstab.hpp"
+#include "viennacl/linalg/cg.hpp"
 
 #include "vector.hpp"
 
@@ -42,6 +45,43 @@ namespace RubyViennacl {
     %rename(UnitUpperTag) unit_upper_tag;
     struct unit_upper_tag {
       static const char* name();
+    };
+
+    RubyViennacl::vector<double> solve(const RubyViennacl::matrix<double>&,
+                                       const RubyViennacl::vector<double>&,
+                                       const RubyViennacl::linalg::lower_tag&);
+    RubyViennacl::vector<double> solve(const RubyViennacl::matrix<double>&,
+                                       const RubyViennacl::vector<double>&,
+                                       const RubyViennacl::linalg::unit_lower_tag&);
+    RubyViennacl::vector<double> solve(const RubyViennacl::matrix<double>&,
+                                       const RubyViennacl::vector<double>&,
+                                       const RubyViennacl::linalg::upper_tag&);
+    RubyViennacl::vector<double> solve(const RubyViennacl::matrix<double>&,
+                                       const RubyViennacl::vector<double>&,
+                                       const RubyViennacl::linalg::unit_upper_tag&);
+
+    RubyViennacl::vector<float> solve(const RubyViennacl::matrix<float>&,
+                                       const RubyViennacl::vector<float>&,
+                                       const RubyViennacl::linalg::lower_tag&);
+    RubyViennacl::vector<float> solve(const RubyViennacl::matrix<float>&,
+                                       const RubyViennacl::vector<float>&,
+                                       const RubyViennacl::linalg::unit_lower_tag&);
+    RubyViennacl::vector<float> solve(const RubyViennacl::matrix<float>&,
+                                       const RubyViennacl::vector<float>&,
+                                       const RubyViennacl::linalg::upper_tag&);
+    RubyViennacl::vector<float> solve(const RubyViennacl::matrix<float>&,
+                                       const RubyViennacl::vector<float>&,
+                                       const RubyViennacl::linalg::unit_upper_tag&);
+
+    %rename(CgTag) cg_tag;
+    struct cg_tag {
+      cg_tag(double, unsigned int);
+      unsigned int iters();
+      double error();
+    };
+    %rename(BicstabTag) bicstab_tag;
+    struct bicgstab_tag {
+      bicgstab_tag (double tol, size_t max_iters, size_t max_iters_before_restart);
     };
   };
 
