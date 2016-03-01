@@ -1,7 +1,8 @@
 %module viennacl
 
 %{
-  // #include <cstdint>
+
+#include <cstdint>
 #include <cmath>
 #include "viennacl/vector.hpp"
 #include "viennacl/linalg/inner_prod.hpp"
@@ -20,10 +21,21 @@ namespace RubyViennacl {
   using std::tan;
   using std::asin;
   using std::acos;
+  using std::atan;
+  using std::sinh;
+  using std::cosh;
+  using std::tanh;
+  using std::exp;
+  using std::log;
+  using std::log10;
+  using std::sqrt;
+  using std::pow;
+  using std::ceil;
+  using std::floor;
 
   template<typename T>
   vector<T> sin(const vector<T>& v){
-    return linalg::element_sin(v);
+    return viennacl::linalg::element_sin(v);
   }
   template<typename T>
   vector<T> cos(const vector<T>& v){
@@ -85,6 +97,11 @@ namespace RubyViennacl {
   vector<T> floor(const vector<T>& v){
     return viennacl::linalg::element_floor(v);
   }
+
+  typedef matrix_expression<const RubyViennacl::matrix_base<double>,
+                            const RubyViennacl::matrix_base<double>,
+                            RubyViennacl::op_trans > TransExpMatrixDouble;
+
 };
 
 %}
@@ -217,13 +234,25 @@ namespace RubyViennacl {
 
   %template(VectorDouble) vector<double>;
   //  %template(VectorSFloat) vector<float>;
-  //  %template(VectorLongInt) vector<long int>;
+  // %template(VectorLongInt) vector<long int>;
   //  %template(VectorInt) vector<int>;
-  //  %template(VectorShortInt) vector<short>;
+  // %template(VectorShortInt) vector<int16_t>;
 
   vector<double> sin(const vector<double>& v);
   double sin(double);
   vector<double> cos(const vector<double>& v);
+
+  //  %nodefaultctor matrix_expression;
+  template<class LHS,class RHS, OP >
+  class matrix_expression{
+  public:
+    matrix_expression(LHS&, RHS&);
+    ~matrix_expression();
+  };
+
+  %template(TransExpMatrixDouble) matrix_expression< const RubyViennacl::matrix_base<double>,
+                                                     const RubyViennacl::matrix_base<double>,
+                                                     RubyViennacl::op_trans >;
 
   template<class T>
   class matrix {
@@ -267,6 +296,11 @@ namespace RubyViennacl {
 
       matrix<T> trans(){
         return viennacl::trans(*$self);
+      }
+
+      %newobject trans_;
+      RubyViennacl::TransExpMatrixDouble* trans_(){
+        return new RubyViennacl::matrix_expression<const RubyViennacl::matrix_base<T>, const RubyViennacl::matrix_base<T>, RubyViennacl::op_trans>((*$self), (*$self));
       }
 
     }
