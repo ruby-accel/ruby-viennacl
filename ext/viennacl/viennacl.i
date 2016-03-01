@@ -39,7 +39,7 @@ namespace RubyViennacl {
     struct upper_tag {
       static const char* name();
     };
-    %rename(UnitUpperTag) unit_lower_tag;
+    %rename(UnitUpperTag) unit_upper_tag;
     struct unit_upper_tag {
       static const char* name();
     };
