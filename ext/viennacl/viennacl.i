@@ -15,6 +15,8 @@
 #include "viennacl/linalg/direct_solve.hpp"
 #include "viennacl/linalg/bicgstab.hpp"
 #include "viennacl/linalg/cg.hpp"
+#include "viennacl/linalg/mixed_precision_cg.hpp"
+#include "viennacl/linalg/gmres.hpp"
 
 #include "vector.hpp"
 
@@ -79,9 +81,21 @@ namespace RubyViennacl {
       unsigned int iters();
       double error();
     };
+    %rename(MixedPrecisionCgTag) mixed_precision_cg_tag;
+    struct mixed_precision_cg_tag {
+      mixed_precision_cg_tag (double tol, unsigned int max_iterations, float inner_tol);
+      unsigned int iters();
+      double error();
+    };
     %rename(BicstabTag) bicstab_tag;
     struct bicgstab_tag {
       bicgstab_tag (double tol, size_t max_iters, size_t max_iters_before_restart);
+    };
+    %rename(GmresTag) gmres_tag;
+    struct gmres_tag {
+      gmres_tag (double tol, unsigned int max_iterations, unsigned int krylov_dim);
+      unsigned int iters();
+      double error();
     };
   };
 
