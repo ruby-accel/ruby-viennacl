@@ -17,6 +17,8 @@
 #include "viennacl/linalg/cg.hpp"
 #include "viennacl/linalg/mixed_precision_cg.hpp"
 #include "viennacl/linalg/gmres.hpp"
+#include "viennacl/linalg/ichol.hpp"
+#include "viennacl/linalg/ilu.hpp"
 
 #include "vector.hpp"
 
@@ -24,6 +26,7 @@ namespace RubyViennacl {
   typedef matrix_expression<const RubyViennacl::matrix_base<double>,
                             const RubyViennacl::matrix_base<double>,
                             RubyViennacl::op_trans > ExpTransMatrixDouble;
+  typedef matrix<double> MatrixDouble;
 };
 
 %}
@@ -97,6 +100,20 @@ namespace RubyViennacl {
       unsigned int iters();
       double error();
     };
+
+
+    %rename(IcholTag) ichol0_tag;
+    struct ichol0_tag {
+      ichol0_tag();
+    };
+
+    template<class MatrixT>
+    class ichol0_precond {
+    public:
+      ichol0_precond(const MatrixT&, const ichol0_tag&);
+      ~ichol0_precond();
+    };
+
   };
 
   template<class LHS,class RHS, OP >
