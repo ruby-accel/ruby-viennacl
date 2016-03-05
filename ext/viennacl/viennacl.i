@@ -20,6 +20,8 @@
 #include "viennacl/linalg/ichol.hpp"
 #include "viennacl/linalg/ilu.hpp"
 
+#include "viennacl/coordinate_matrix.hpp"
+
 #include "vector.hpp"
 
 namespace RubyViennacl {
@@ -27,11 +29,13 @@ namespace RubyViennacl {
                             const RubyViennacl::matrix_base<double>,
                             RubyViennacl::op_trans > ExpTransMatrixDouble;
   typedef matrix<double> MatrixDouble;
+  typedef compressed_matrix<double> SpMatrixDouble;
 };
 
 %}
 
 %include "vector.i"
+%include "matrix.i"
 
 namespace RubyViennacl {
   namespace linalg {
@@ -90,7 +94,7 @@ namespace RubyViennacl {
       unsigned int iters();
       double error();
     };
-    %rename(BicstabTag) bicstab_tag;
+    %rename(BicstabTag) bicgstab_tag;
     struct bicgstab_tag {
       bicgstab_tag (double tol, size_t max_iters, size_t max_iters_before_restart);
     };
@@ -126,58 +130,8 @@ namespace RubyViennacl {
   %template(ExpTransMatrixDouble) matrix_expression< const RubyViennacl::matrix_base<double>,
                                                      const RubyViennacl::matrix_base<double>,
                                                      RubyViennacl::op_trans >;
-
-  template<class T>
-  class matrix {
-  public:
-    matrix(size_t, size_t);
-    ~matrix();
-
-    %extend {
-
-      T __getitem__(size_t i, size_t j){
-        return (*$self)(i,j);
-      }
-
-      void __setitem__(size_t i, size_t j, const T x){
-        (*$self)(i,j) = x;
-      }
-
-      vector<T> __mul__(const vector<T>& v){
-        return viennacl::linalg::prod((*$self), v);
-      }
-
-      vector<T> trans_prod(const vector<T>& v){
-        return viennacl::linalg::prod(viennacl::trans(*$self), v);
-      }
-
-      matrix<T> __add__(const matrix<T>& m){
-        return (*$self) + m;
-      }
-
-      matrix<T> __sub__(const matrix<T>& m){
-        return (*$self) + m;
-      }
-
-      matrix<T> __mul__(const matrix<T>& m){
-        return viennacl::linalg::prod((*$self), m);
-      }
-
-      matrix<T> __mul__(const T x){
-        return (*$self) * x;
-      }
-
-      matrix<T> trans(){
-        return viennacl::trans(*$self);
-      }
-
-      %newobject trans_;
-      RubyViennacl::ExpTransMatrixDouble* trans_(){
-        return new RubyViennacl::matrix_expression<const RubyViennacl::matrix_base<T>, const RubyViennacl::matrix_base<T>, RubyViennacl::op_trans>((*$self), (*$self));
-      }
-
-    }
-  };
-  %template(MatrixDouble) matrix<double>;
+  %template(ExpTransSpMatrixDouble) matrix_expression< const RubyViennacl::compressed_matrix<double>,
+                                                     const RubyViennacl::compressed_matrix<double>,
+                                                     RubyViennacl::op_trans >;
 
 };
