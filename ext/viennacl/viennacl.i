@@ -70,17 +70,17 @@ namespace RubyViennacl {
                                        const RubyViennacl::linalg::unit_upper_tag&);
 
     RubyViennacl::vector<float> solve(const RubyViennacl::matrix<float>&,
-                                       const RubyViennacl::vector<float>&,
-                                       const RubyViennacl::linalg::lower_tag&);
+                                      const RubyViennacl::vector<float>&,
+                                      const RubyViennacl::linalg::lower_tag&);
     RubyViennacl::vector<float> solve(const RubyViennacl::matrix<float>&,
-                                       const RubyViennacl::vector<float>&,
-                                       const RubyViennacl::linalg::unit_lower_tag&);
+                                      const RubyViennacl::vector<float>&,
+                                      const RubyViennacl::linalg::unit_lower_tag&);
     RubyViennacl::vector<float> solve(const RubyViennacl::matrix<float>&,
-                                       const RubyViennacl::vector<float>&,
-                                       const RubyViennacl::linalg::upper_tag&);
+                                      const RubyViennacl::vector<float>&,
+                                      const RubyViennacl::linalg::upper_tag&);
     RubyViennacl::vector<float> solve(const RubyViennacl::matrix<float>&,
-                                       const RubyViennacl::vector<float>&,
-                                       const RubyViennacl::linalg::unit_upper_tag&);
+                                      const RubyViennacl::vector<float>&,
+                                      const RubyViennacl::linalg::unit_upper_tag&);
 
     %rename(CgTag) cg_tag;
     struct cg_tag {
@@ -88,16 +88,48 @@ namespace RubyViennacl {
       unsigned int iters();
       double error();
     };
+
+    template<class T>
+    class cg_solver {
+    public:
+      cg_solver(const RubyViennacl::linalg::cg_tag&);
+      ~cg_solver();
+
+      %extend {
+        T solve(const RubyViennacl::matrix<T::cpu_value_type>& m, const T& b){
+          return (*$self)(m, b);
+        }
+      }
+    };
+    %template(CGSolverDouble) cg_solver< RubyViennacl::vector<double> >;
+    %template(CGSolverFloat)  cg_solver< RubyViennacl::vector<float> >;
+
     %rename(MixedPrecisionCgTag) mixed_precision_cg_tag;
     struct mixed_precision_cg_tag {
       mixed_precision_cg_tag (double tol, unsigned int max_iterations, float inner_tol);
       unsigned int iters();
       double error();
     };
-    %rename(BicstabTag) bicgstab_tag;
+
+    %rename(BiCGStabTag) bicgstab_tag;
     struct bicgstab_tag {
       bicgstab_tag (double tol, size_t max_iters, size_t max_iters_before_restart);
     };
+
+    template<class VecT>
+    class bicgstab_solver {
+    public:
+      bicgstab_solver(const bicgstab_tag&);
+      ~bicgstab_solver();
+
+      %extend {
+        VecT solve(const RubyViennacl::matrix<VecT::cpu_value_type>& m, const VecT& b){
+          return (*$self)(m, b);
+        }
+      }
+    };
+    %template(BiCGStabSolverDouble) bicgstab_solver<RubyViennacl::vector<double> >;
+
     %rename(GmresTag) gmres_tag;
     struct gmres_tag {
       gmres_tag (double tol, unsigned int max_iterations, unsigned int krylov_dim);
