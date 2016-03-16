@@ -2,7 +2,7 @@ require "rake/extensiontask"
 require 'rake/testtask'
 require 'rake/clean'
 
-vlibs = ["viennacl"]
+vlibs = ["viennacl", "eigen"]
 other_libs = ["ocl"]
 elibs = vlibs + other_libs
 elibs.each{|s|
