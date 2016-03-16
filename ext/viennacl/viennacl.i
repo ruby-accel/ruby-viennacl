@@ -24,13 +24,7 @@
 
 #include "vector.hpp"
 
-namespace RubyViennacl {
-  typedef matrix_expression<const RubyViennacl::matrix_base<double>,
-                            const RubyViennacl::matrix_base<double>,
-                            RubyViennacl::op_trans > ExpTransMatrixDouble;
-  typedef matrix<double> MatrixDouble;
-  typedef compressed_matrix<double> SpMatrixDouble;
-};
+#include "rubyviennacl_base.hpp"
 
 %}
 
