@@ -1,6 +1,10 @@
 %module "eigen"
 
-%include "ruby-eigen/ext/eigen/rb_error_handle.i"
+%{
+#include <stdexcept>
+#include "ruby-eigen/ext/eigen/rubyeigen_except.h"
+%}
+
 %import "ruby-eigen/ext/eigen/eigen.i"
 
 %{
