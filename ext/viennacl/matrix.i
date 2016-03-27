@@ -11,7 +11,7 @@ namespace RubyViennacl {
       T __getitem__(size_t i, size_t j){
         return (*$self)(i,j);
       }
-      
+
       void __setitem__(size_t i, size_t j, const T x){
         (*$self)(i,j) = x;
       }
@@ -20,10 +20,19 @@ namespace RubyViennacl {
         return viennacl::linalg::prod((*$self), m);
       }
 
+      RubyViennacl::matrix<T> __mul__(const RubyViennacl::matrix<T>& m){
+        return viennacl::linalg::prod((*$self), m);
+      }
+
+      RubyViennacl::vector<T> __mul__(const RubyViennacl::vector<T>& v){
+        return viennacl::linalg::prod((*$self), v);
+      }
+
     };
 
   };
-  %template(SpMatrixDoubleCompr) compressed_matrix<double>;
+  %template(SpMatrixDouble) compressed_matrix<double>;
+  %template(SpMatrixFloat)  compressed_matrix<float>;
 
   template<class T>
   class matrix {
