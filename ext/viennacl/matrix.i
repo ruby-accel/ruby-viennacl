@@ -23,7 +23,7 @@ namespace RubyViennacl {
     };
 
   };
-  %template(SpMatrixDoubleCoor) compressed_matrix<double>;
+  %template(SpMatrixDoubleCompr) compressed_matrix<double>;
 
   template<class T>
   class matrix {

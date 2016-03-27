@@ -89,15 +89,25 @@ namespace RubyViennacl {
       double error();
     };
 
-    template<class T>
+    template<class VecT>
     class cg_solver {
     public:
       cg_solver(const RubyViennacl::linalg::cg_tag&);
       ~cg_solver();
 
       %extend {
-        T solve(const RubyViennacl::matrix<T::cpu_value_type>& m, const T& b){
+        VecT solve(const RubyViennacl::matrix<VecT::cpu_value_type>& m, const VecT& b){
           return (*$self)(m, b);
+        }
+
+        VecT solve(const RubyViennacl::compressed_matrix<VecT::cpu_value_type>& m, const VecT& b){
+          return (*$self)(m, b);
+        }
+
+        VecT solve(const RubyViennacl::compressed_matrix<VecT::cpu_value_type>& m, const VecT& b,
+                const RubyViennacl::linalg::ichol0_precond<
+                   RubyViennacl::compressed_matrix<VecT::cpu_value_type> >& precond){
+          return (*$self)(m, b, precond);
         }
       }
     };
@@ -126,9 +136,14 @@ namespace RubyViennacl {
         VecT solve(const RubyViennacl::matrix<VecT::cpu_value_type>& m, const VecT& b){
           return (*$self)(m, b);
         }
+
+        VecT solve(const RubyViennacl::compressed_matrix<VecT::cpu_value_type>& m, const VecT& b){
+          return (*$self)(m, b);
+        }
       }
     };
     %template(BiCGStabSolverDouble) bicgstab_solver<RubyViennacl::vector<double> >;
+    %template(BiCGStabSolverFloat) bicgstab_solver<RubyViennacl::vector<float> >;
 
     %rename(GmresTag) gmres_tag;
     struct gmres_tag {
@@ -137,6 +152,24 @@ namespace RubyViennacl {
       double error();
     };
 
+    template<class VecT>
+    class gmres_solver {
+    public:
+      gmres_solver(const gmres_tag&);
+      ~gmres_solver();
+
+      %extend {
+        VecT solve(const RubyViennacl::matrix<VecT::cpu_value_type>& m, const VecT& b){
+          return (*$self)(m, b);
+        }
+
+        VecT solve(const RubyViennacl::compressed_matrix<VecT::cpu_value_type>& m, const VecT& b){
+          return (*$self)(m, b);
+        }
+      }
+    };
+    %template(GMRESSolverDouble) gmres_solver<RubyViennacl::vector<double> >;
+    %template(GMRESSolverFloat) gmres_solver<RubyViennacl::vector<float> >;
 
     %rename(IcholTag) ichol0_tag;
     struct ichol0_tag {
@@ -149,8 +182,10 @@ namespace RubyViennacl {
       ichol0_precond(const MatrixT&, const ichol0_tag&);
       ~ichol0_precond();
     };
+    %template(ICHOL0PrecondDouble) ichol0_precond<RubyViennacl::compressed_matrix<double> >;
+    %template(ICHOL0PrecondFloat)  ichol0_precond<RubyViennacl::compressed_matrix<float> >;
 
-  };
+  }; // end of namespace linalg
 
   template<class LHS,class RHS, OP >
   class matrix_expression{
