@@ -32,6 +32,18 @@ namespace RubyViennacl {
     ~matrix();
 
     %extend {
+      %newobject create;
+      static RubyViennacl::matrix<T>* create(const std::vector<std::vector<T> >& m) {
+        RubyViennacl::matrix<T> *ret = new RubyViennacl::matrix<T>(m.size(), m[0].size());
+        RubyViennacl::copy(m, *ret);
+        return ret;
+      }
+
+      const std::vector<std::vector<T> > to_a() {
+        std::vector<std::vector<T> > ret((*$self).size1(), std::vector<T>((*$self).size2()));
+        RubyViennacl::copy(*$self, ret);
+        return ret;
+      }
 
       T __getitem__(size_t i, size_t j){
         return (*$self)(i,j);
@@ -70,12 +82,12 @@ namespace RubyViennacl {
       }
 
       %newobject trans_;
-      RubyViennacl::ExpTransMatrixDouble* trans_(){
+      RubyViennacl::matrix_expression<const RubyViennacl::matrix_base<T>, const RubyViennacl::matrix_base<T>, RubyViennacl::op_trans>* trans_(){
         return new RubyViennacl::matrix_expression<const RubyViennacl::matrix_base<T>, const RubyViennacl::matrix_base<T>, RubyViennacl::op_trans>((*$self), (*$self));
       }
 
     }
   };
   %template(MatrixDouble) matrix<double>;
-
+  %template(MatrixFloat) matrix<float>;
 };

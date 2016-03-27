@@ -1,5 +1,11 @@
 %module viennacl
 
+%include std_vector.i
+%template(StdVecDouble) std::vector<double>;
+%template(StdVecVecDouble) std::vector<std::vector<double> >;
+%template(StdVecFloat) std::vector<float>;
+%template(StdVecVecFloat) std::vector<std::vector<float> >;
+
 %{
 
 #include <cstdint>
@@ -156,6 +162,9 @@ namespace RubyViennacl {
   %template(ExpTransMatrixDouble) matrix_expression< const RubyViennacl::matrix_base<double>,
                                                      const RubyViennacl::matrix_base<double>,
                                                      RubyViennacl::op_trans >;
+  %template(ExpTransMatrixFloat) matrix_expression< const RubyViennacl::matrix_base<float>,
+                                                    const RubyViennacl::matrix_base<float>,
+                                                    RubyViennacl::op_trans >;
   %template(ExpTransSpMatrixDouble) matrix_expression< const RubyViennacl::compressed_matrix<double>,
                                                      const RubyViennacl::compressed_matrix<double>,
                                                      RubyViennacl::op_trans >;

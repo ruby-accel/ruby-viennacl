@@ -12,6 +12,19 @@ namespace RubyViennacl {
 
     %extend {
 
+      %newobject create;
+      static RubyViennacl::vector<T>* create(const std::vector<T>& m) {
+        RubyViennacl::vector<T> *ret = new RubyViennacl::vector<T>(m.size());
+        RubyViennacl::copy(m, *ret);
+        return ret;
+      }
+
+      const std::vector<T> to_a() {
+        std::vector<T> ret((*$self).size());
+        RubyViennacl::copy((*$self), ret);
+        return ret;
+      }
+
       void assign(const vector<T>& v) {
         (*$self) = v;
       }
@@ -125,7 +138,7 @@ namespace RubyViennacl {
   };
 
   %template(VectorDouble) vector<double>;
-  //  %template(VectorSFloat) vector<float>;
+  %template(VectorFloat) vector<float>;
   // %template(VectorLongInt) vector<long int>;
   //  %template(VectorInt) vector<int>;
   // %template(VectorShortInt) vector<int16_t>;
