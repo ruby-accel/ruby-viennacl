@@ -6,7 +6,41 @@
 %template(StdVecFloat) std::vector<float>;
 %template(StdVecVecFloat) std::vector<std::vector<float> >;
 
+%import(module="viennacl/dummy") "ruby-eigen/ext/eigen/rubyeigen_base.h"
+
+%inline %{
+namespace Eigen {};
+namespace RubyEigen {
+  using namespace Eigen;
+};
+%}
+
 %{
+
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+#include <stdexcept>
+#include "ruby-eigen/ext/eigen/rubyeigen_base.h"
+#include "ruby-eigen/ext/eigen/rubyeigen_except.h"
+#define VIENNACL_WITH_EIGEN 1
+
+template<typename T>
+struct Eigen_dense_matrix
+{
+  typedef typename T::ERROR_NO_EIGEN_TYPE_AVAILABLE   error_type;
+};
+template<>
+struct Eigen_dense_matrix<float>
+{
+  typedef RubyEigen::MatrixFloat  type;
+};
+template<>
+struct Eigen_dense_matrix<double>
+{
+  typedef RubyEigen::MatrixDouble  type;
+};
+typedef Eigen_dense_matrix<float>::type EigenMatrixf;
+typedef Eigen_dense_matrix<double>::type EigenMatrixd;
 
 #include <cstdint>
 #include <cmath>
@@ -205,3 +239,33 @@ namespace RubyViennacl {
                                                      RubyViennacl::op_trans >;
 
 };
+
+%exception {
+  try {
+    $action
+  }
+  catch (const RubyEigen::EigenRuntimeError &e) {
+    /* this rb_raise is called inside SWIG functions. That's ok. */
+    rb_raise(rb_eEigenRuntimeError, "%s", e.what());
+  } 
+  catch (const std::runtime_error &e) {
+    rb_raise(rb_eRuntimeError, "%s", e.what());
+  }
+}
+
+%inline %{
+  namespace RubyViennacl {
+    const RubyViennacl::matrix<double> __eigen_to_viennacl__(const RubyEigen::MatrixDouble& e){
+      RubyViennacl::matrix<double> v(e.rows(), e.cols());
+      const EigenMatrixd m(e);
+      viennacl::copy(m, v);
+      return v;
+    }
+    /*
+    void __viennacl_to_eigen__(RubyViennacl::MatrixDouble& v, RubyEigen::MatrixXd& e){
+      copy(v, e);
+    }
+    */
+  };
+
+%}

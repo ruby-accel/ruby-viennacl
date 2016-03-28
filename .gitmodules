@@ -1,3 +1,6 @@
 [submodule "ext/viennacl/viennacl"]
 	path = ext/viennacl/viennacl
 	url = git@github.com:viennacl/viennacl-dev.git
+[submodule "ext/viennacl/ruby-eigen"]
+	path = ext/viennacl/ruby-eigen
+	url = git@github.com:ruby-eigen/ruby-eigen.git
