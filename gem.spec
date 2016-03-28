@@ -9,10 +9,14 @@ Gem::Specification.new do |s|
   s.files       = ["LICENSE", 
 #                   "README.md",
                    "lib/viennacl.rb",
+                   "lib/viennacl/dummy.rb",
                    "ext/ocl/ocl.cxx",
                    "ext/ocl/ocl_wrap.inc",
                    "ext/viennacl/vector.hpp",
-                   "ext/viennacl/viennacl_wrap.cxx"] + Dir.glob("ext/viennacl/viennacl/viennacl/**/*")
+                   "ext/viennacl/rubyviennacl_base.hpp",
+                   "ext/viennacl/viennacl_wrap.cxx"] +
+  Dir.glob("ext/viennacl/viennacl/viennacl/**/*") +
+  Dir.glob("ext/viennacl/ruby-eigen/**/*")
   s.extensions  = ["ext/viennacl/extconf.rb", "ext/ocl/extconf.rb"]
   s.homepage    = 'https://github.com/ruby-accel/ruby-viennacl'
   s.license     = 'MIT'
