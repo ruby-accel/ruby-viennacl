@@ -1,11 +1,27 @@
 %module "viennacl::ocl"
 
 %{
-#include "viennacl/vector.hpp"
+#include "viennacl/context.hpp"
 %}
 
 namespace viennacl {
   namespace ocl {
-    viennacl::ocl::device const & current_device();
+
+    %rename(Context) context;
+    class context {
+    public:
+      context();
+      ~context();
+    };
+
+    %rename(Device) device;
+    class device {
+    public:
+      device();
+      ~device();
+    };
+
+    const viennacl::ocl::context& viennacl::ocl::current_context();
+
   }
 };

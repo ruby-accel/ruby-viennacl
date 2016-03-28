@@ -28,4 +28,8 @@ class TestViennaCL < Test::Unit::TestCase
     rescue LoadError
     end
   end
+
+  def test_ocl
+    p ViennaCL::OCL.current_context()
+  end
 end
