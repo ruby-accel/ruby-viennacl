@@ -9,7 +9,7 @@ elibs.each{|s|
   Rake::ExtensionTask.new s do |ext|
     ext.ext_dir = "ext/#{s.downcase}"
     ext.lib_dir = "lib/viennacl"
-    ext.source_pattern = "*.c*"
+    ext.source_pattern = "*.*c*"
   end
 }
 
