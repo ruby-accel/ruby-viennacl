@@ -10,4 +10,4 @@ end
 viennacl_path = File.join(File.dirname(File.expand_path(__FILE__)), "../viennacl/viennacl/")
 
 $CXXFLAGS = ($CXXFLAGS || "") + " -O2 -I #{viennacl_path} #{device_flag}"
-create_makefile('viennacl/ocl')
+create_makefile('viennacl/OCL')
