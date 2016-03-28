@@ -18,4 +18,14 @@ class TestViennaCL < Test::Unit::TestCase
     v = ViennaCL::VectorFloat::create([1,1,1,1])
     assert_equal([10,10], (m*v).to_a)
   end
+
+  def test_eigen
+    begin
+      require "eigen"
+      m = Eigen::MatrixDouble[[1,2],[3,4]]
+      assert_equal([[1,2],[3,4]],
+                   ViennaCL.__eigen_to_viennacl__(m).to_a)
+    rescue LoadError
+    end
+  end
 end
