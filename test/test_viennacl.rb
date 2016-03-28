@@ -22,14 +22,20 @@ class TestViennaCL < Test::Unit::TestCase
   def test_eigen
     begin
       require "eigen"
-      m = Eigen::MatrixDouble[[1,2],[3,4]]
+      m = Eigen::MatrixFloat[[1,2],[3,4]]
+      m2 =ViennaCL.from_eigen(m)
       assert_equal([[1,2],[3,4]],
-                   ViennaCL.__eigen_to_viennacl__(m).to_a)
+                   m2.to_a)
+      assert_equal(m, m2.to_eigen)
     rescue LoadError
     end
   end
 
   def test_ocl
-    p ViennaCL::OCL.current_context()
+    ViennaCL::OCL.current_context()
+    c.current_device().info()
+    ViennaCL::OCL.set_context_device_type(0, ViennaCL::OCL.CPUTag)
+    c.current_device().info()
+    ViennaCL::OCL::Platform.new.devices()
   end
 end
