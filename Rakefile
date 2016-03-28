@@ -2,12 +2,13 @@ require "rake/extensiontask"
 require 'rake/testtask'
 require 'rake/clean'
 
-vlibs = ["viennacl", "eigen"]
+vlibs = ["viennacl"]
 other_libs = ["ocl"]
 elibs = vlibs + other_libs
 elibs.each{|s|
   Rake::ExtensionTask.new s do |ext|
     ext.lib_dir = "lib/viennacl"
+    ext.source_pattern = "*.c*"
   end
 }
 
