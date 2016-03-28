@@ -54,6 +54,13 @@ namespace RubyViennacl {
         return ret;
       }
 
+      const RubyEigen::Matrix<T, RubyEigen::Dynamic, RubyEigen::Dynamic>
+        to_eigen() {
+        RubyEigen::Matrix<T, RubyEigen::Dynamic, RubyEigen::Dynamic> ret((*$self).size1(), (*$self).size2());
+        RubyViennacl::copy(*$self, ret);
+        return ret;
+      }
+
       T __getitem__(size_t i, size_t j){
         return (*$self)(i,j);
       }
