@@ -6,7 +6,7 @@
 %template(StdVecFloat) std::vector<float>;
 %template(StdVecVecFloat) std::vector<std::vector<float> >;
 
-%import(module="viennacl/dummy") "ruby-eigen/ext/eigen/rubyeigen_base.h"
+%import "ruby-eigen/ext/eigen/rubyeigen_base.h"
 
 %inline %{
 namespace Eigen {};
