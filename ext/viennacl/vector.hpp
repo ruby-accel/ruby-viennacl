@@ -1,6 +1,7 @@
 namespace RubyViennacl {
   using namespace viennacl;
 
+  using std::fabs;
   using std::sin;
   using std::cos;
   using std::tan;
@@ -17,6 +18,11 @@ namespace RubyViennacl {
   using std::pow;
   using std::ceil;
   using std::floor;
+
+  template<typename T>
+  vector<T> fabs(const vector<T>& v){
+    return viennacl::linalg::element_fabs(v);
+  }
 
   template<typename T>
   vector<T> sin(const vector<T>& v){
