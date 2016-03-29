@@ -38,4 +38,18 @@ class TestViennaCL < Test::Unit::TestCase
     c.current_device().info()
     ViennaCL::OCL::Platform.new.devices()
   end
+
+  def test_sp_eigen
+    begin
+      require "eigen"
+      m = Eigen::SpMatrixFloat.new(2,2)
+      m[0,0] = 1
+      m[0,1] = 2
+      m1 = ViennaCL.from_eigen(m)
+      assert_equal(m[0,0], m1[0,0])
+      assert_equal(m[0,1], m1[0,1])
+    rescue LoadError
+    end
+  end
+
 end

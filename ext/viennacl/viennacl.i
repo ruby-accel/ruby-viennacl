@@ -106,19 +106,39 @@ namespace RubyViennacl {
   }
 }
 
+
+namespace RubyViennacl {
+  %newobject from_eigen;
+};
+
 %inline %{
   namespace RubyViennacl {
-    const RubyViennacl::matrix<double> from_eigen(const RubyEigen::MatrixDouble& e){
-      RubyViennacl::matrix<double> v(e.rows(), e.cols());
+    const RubyViennacl::matrix<double>* from_eigen(const RubyEigen::MatrixDouble& e){
+      RubyViennacl::matrix<double> *v = new RubyViennacl::matrix<double>(e.rows(), e.cols());
       const EigenMatrixd m(e);
-      viennacl::copy(m, v);
+      viennacl::copy(m, *v);
       return v;
     }
-    const RubyViennacl::matrix<float> from_eigen(const RubyEigen::MatrixFloat& e){
-      RubyViennacl::matrix<float> v(e.rows(), e.cols());
+    const RubyViennacl::matrix<float>* from_eigen(const RubyEigen::MatrixFloat& e){
+      RubyViennacl::matrix<float> *v = new RubyViennacl::matrix<float> (e.rows(), e.cols());
       const EigenMatrixf m(e);
-      viennacl::copy(m, v);
+      viennacl::copy(m, *v);
       return v;
     }
+
+    const RubyViennacl::compressed_matrix<double>* from_eigen(const RubyEigen::SparseMatrix<double>& e){
+      RubyViennacl::compressed_matrix<double> *ret = new RubyViennacl::compressed_matrix<double>(e.rows(), e.cols());
+      RubyEigen::SparseMatrix<double, RubyEigen::RowMajor> e1(e);
+      viennacl::copy(e1, *ret);
+      return ret;
+    }
+
+    const RubyViennacl::compressed_matrix<float>* from_eigen(const RubyEigen::SparseMatrix<float>& e){
+      RubyViennacl::compressed_matrix<float> *ret = new RubyViennacl::compressed_matrix<float>(e.rows(), e.cols());
+      RubyEigen::SparseMatrix<float, RubyEigen::RowMajor> e1(e);
+      viennacl::copy(e1, *ret);
+      return ret;
+    }
+
   };
 %}
