@@ -12,11 +12,14 @@ namespace viennacl {
   namespace ocl {
     struct viennacl::ocl::cpu_tag CPUTag = viennacl::ocl::cpu_tag();
     struct viennacl::ocl::gpu_tag GPUTag = viennacl::ocl::gpu_tag();
+    struct viennacl::ocl::default_tag DefaultTag = viennacl::ocl::default_tag();
+    struct viennacl::ocl::accelerator_tag AcceleratorTag = viennacl::ocl::accelerator_tag();
   };
 };
 %}
 
 %template(StdVectorDevice) std::vector<viennacl::ocl::device>;
+%template(StdVectorPlatform) std::vector<viennacl::ocl::platform>;
 
 namespace viennacl {
   namespace ocl {
@@ -61,7 +64,6 @@ namespace viennacl {
       const std::string driver_version();
       bool double_support();
 
-      cl_device_id id();
       const std::string info();
     };
 
@@ -71,7 +73,6 @@ namespace viennacl {
       platform();
       ~platform();
       const std::vector<viennacl::ocl::device> devices();
-      cl_platform_id id();
     };
 
     %rename(CommandQueue) command_queue;
@@ -88,7 +89,16 @@ namespace viennacl {
       ~program();
     };
 
+    %rename(Kernel) kernel;
+    class kernel {
+    public:
+      kernel();
+      ~kernel();
+    };
+
     const viennacl::ocl::context& viennacl::ocl::current_context();
     void set_context_device_type(long, viennacl::ocl::cpu_tag);
+    const std::vector<viennacl::ocl::platform> get_platforms();
+
   };
 };
