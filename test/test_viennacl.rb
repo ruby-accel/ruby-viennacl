@@ -32,7 +32,7 @@ class TestViennaCL < Test::Unit::TestCase
   end
 
   def test_ocl
-    ViennaCL::OCL.current_context()
+    c = ViennaCL::OCL.current_context()
     c.current_device().info()
     ViennaCL::OCL.set_context_device_type(0, ViennaCL::OCL.CPUTag)
     c.current_device().info()
