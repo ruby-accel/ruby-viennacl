@@ -75,6 +75,10 @@ typedef Eigen_dense_matrix<double>::type EigenMatrixd;
 
 namespace RubyViennacl {
 
+  namespace backend {
+    void finish();
+  };
+
   template<class LHS,class RHS, OP >
   class matrix_expression{
   public:
