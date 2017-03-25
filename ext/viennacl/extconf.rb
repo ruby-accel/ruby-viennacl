@@ -7,12 +7,18 @@ if gems.size > 1
 end
 find_header("numo/narray.h", File.join(gems[0].gem_dir, "lib/numo/") )
 
+have_func("rb_gc_adjust_memory_usage")
+
 device_flag = ""
-if defined?(MKMF_CU)
+if arg_config("--enable-cuda") and defined?(MKMF_CU)
   device_flag = " -DVIENNACL_WITH_CUDA -x cu "
-elsif have_library("OpenCL") or have_framework("OpenCL")
-#  device_flag = " -DVIENNACL_WITH_OPENCL "
+elsif arg_config("--enable-opencl") and (have_library("OpenCL") or have_framework("OpenCL"))
+  device_flag = " -DVIENNACL_WITH_OPENCL "
 end
+if arg_config("--enable-openmp")
+  device_flag += " -fopenmp -DVIENNACL_WITH_OPENMP "
+end
+
 viennacl_path = File.join(File.dirname(File.expand_path(__FILE__)), "viennacl/")
 
 $CXXFLAGS = ($CXXFLAGS || "") + " -O2 -I #{viennacl_path} #{device_flag} "
