@@ -19,6 +19,28 @@ namespace RubyViennacl {
         return ret;
       }
 
+      %newobject from_narray;
+      static RubyViennacl::vector<T>* from_narray(VALUE na) {
+        if (!IsNArray(na)) {
+          rb_raise(rb_eArgError, "Numo::NArray expected");
+        }
+        if (!rb_obj_is_kind_of(na, RubyViennacl::narray_traits<T>::type()) ) {
+          rb_raise(rb_eArgError, "Numo::NArray type not matched");
+        }
+        if (RNARRAY_NDIM(na)!=1) {
+            rb_raise(rb_eArgError, "NArray#ndim == 1 expected");
+        } else {
+          size_t* shp = RNARRAY_SHAPE(na);
+          size_t  len = shp[0];
+          char*  data = RNARRAY_DATA_PTR(na);
+          std::vector<T> tmp(len);
+          RubyViennacl::vector<T> *ret = new RubyViennacl::vector<T>(len);
+          memcpy(tmp.data(), data, len*sizeof(T));
+          RubyViennacl::copy(tmp, *ret);
+          return ret;
+        }
+      }
+
       const std::vector<T> to_a() {
         std::vector<T> ret((*$self).size());
         RubyViennacl::copy((*$self), ret);
@@ -45,22 +67,23 @@ namespace RubyViennacl {
         return (*$self) - v;
       }
 
-      vector<T> __mul__(const T &v){
+      vector<T> dot(const T &v){
         return (*$self) * v;
-      }
-
-      vector<T> __div__(const T &v){
-        return (*$self) / v;
       }
 
       vector<T> __mul__(const vector<T>& v){
         return viennacl::linalg::element_prod(*$self, v);
       }
 
-      vector<T> div(const vector<T>& v){
-        return viennacl::linalg::element_div(*$self, v);
+      vector<T> __pow__(const vector<T> &v){
+        return viennacl::linalg::element_pow(*$self, v);
       }
 
+      /*
+      vector<T> __div__(const T &v){
+        return viennacl::linalg::element_div(*$self, v);
+      }
+      */
       T inner_prod(const vector<T>& v){
         return viennacl::linalg::inner_prod(*$self, v);
       }
@@ -77,68 +100,18 @@ namespace RubyViennacl {
         return viennacl::linalg::norm_inf(*$self);
       }
 
-      /*
-      vector<T> abs(){
-        return viennacl::linalg::element_abs(*$self);
-      }
-      */
-      vector<T> fabs(){
-        return viennacl::linalg::element_fabs(*$self);
-      }
-
-      vector<T> sin(){
-        return viennacl::linalg::element_sin(*$self);
-      }
-      vector<T> cos(){
-        return viennacl::linalg::element_cos(*$self);
-      }
-      vector<T> tan(){
-        return viennacl::linalg::element_tan(*$self);
-      }
-      vector<T> asin(){
-        return viennacl::linalg::element_asin(*$self);
-      }
-      vector<T> acos(){
-        return viennacl::linalg::element_acos(*$self);
-      }
-      vector<T> atan(){
-        return viennacl::linalg::element_atan(*$self);
-      }
-      vector<T> sinh(){
-        return viennacl::linalg::element_sinh(*$self);
-      }
-      vector<T> cosh(){
-        return viennacl::linalg::element_cosh(*$self);
-      }
-      vector<T> tanh(){
-        return viennacl::linalg::element_tanh(*$self);
-      }
-      vector<T> exp(){
-        return viennacl::linalg::element_exp(*$self);
-      }
-      vector<T> log(){
-        return viennacl::linalg::element_log(*$self);
-      }
-      vector<T> log10(){
-        return viennacl::linalg::element_log10(*$self);
-      }
-      vector<T> sqrt(){
-        return viennacl::linalg::element_sqrt(*$self);
-      }
-      vector<T> pow(const vector<T> &v){
-        return viennacl::linalg::element_pow(*$self, v);
-      }
       vector<T> ceil(){
         return viennacl::linalg::element_ceil(*$self);
       }
+
       vector<T> floor(){
         return viennacl::linalg::element_floor(*$self);
       }
     }
   };
 
-  %template(VectorDouble) vector<double>;
-  %template(VectorFloat) vector<float>;
+  %template(DFloatVector) vector<double>;
+  %template(SFloatVector) vector<float>;
 
   vector<double> fabs(const vector<double>& v);
   double fabs(double);

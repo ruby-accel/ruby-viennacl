@@ -8,6 +8,7 @@
 
 %{
 
+#include <numo/narray.h>
 #include <cstdint>
 #include <cmath>
 #include "viennacl/vector.hpp"
@@ -31,6 +32,25 @@
 #include "vector.hpp"
 
 #include "rubyviennacl_base.hpp"
+
+
+namespace RubyViennacl {
+  template<typename T>
+  struct narray_traits{
+    static VALUE type() { return Qnil; }
+  };
+
+  template<>
+  struct narray_traits<double>{
+    static VALUE type() { return numo_cDFloat; }
+  };
+
+  template<>
+  struct narray_traits<float>{
+    static VALUE type() { return numo_cSFloat; }
+  };
+
+};
 
 %}
 

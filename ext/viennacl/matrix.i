@@ -47,7 +47,33 @@ namespace RubyViennacl {
         RubyViennacl::copy(m, *ret);
         return ret;
       }
-
+      
+      %newobject from_narray;
+      static RubyViennacl::matrix<T>* from_narray(VALUE na) {
+        if (!IsNArray(na)) {
+          rb_raise(rb_eArgError, "Numo::NArray expected");
+        }
+        if ( !rb_obj_is_kind_of(na, RubyViennacl::narray_traits<T>::type()) ) {
+          rb_raise(rb_eArgError, "Numo::NArray type not matched");
+        }
+        if (RNARRAY_NDIM(na)!=2) {
+            rb_raise(rb_eArgError, "NArray#ndim == 2 expected");
+        } else {
+          size_t* shp = RNARRAY_SHAPE(na);
+          size_t cols = shp[0];
+          size_t rows = shp[1];
+          char*  data = RNARRAY_DATA_PTR(na);
+          std::vector<std::vector<T> > tmp(cols);
+          RubyViennacl::matrix<T> *ret = new RubyViennacl::matrix<T>(rows, cols);
+          for(int i=0; i < cols; i++) {
+            tmp[i].resize(rows);
+            memcpy(tmp[i].data(), data + i*rows*(sizeof(T)/sizeof(char)), rows*sizeof(T)); 
+          }
+          RubyViennacl::copy(tmp, *ret);
+          return ret;
+        }
+      }
+      
       const std::vector<std::vector<T> > to_a() {
         std::vector<std::vector<T> > ret((*$self).size1(), std::vector<T>((*$self).size2()));
         RubyViennacl::copy(*$self, ret);
@@ -97,6 +123,6 @@ namespace RubyViennacl {
 
     }
   };
-  %template(MatrixDouble) matrix<double>;
-  %template(MatrixFloat) matrix<float>;
+  %template(DFloatMatrix) matrix<double>;
+  %template(SFloatMatrix) matrix<float>;
 };

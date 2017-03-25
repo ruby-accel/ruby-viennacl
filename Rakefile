@@ -1,6 +1,7 @@
 require "rake/extensiontask"
 require 'rake/testtask'
 require 'rake/clean'
+require "numo/narray"
 
 vlibs = ["ViennaCL"]
 other_libs = ["OCL"]
