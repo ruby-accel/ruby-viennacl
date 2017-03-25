@@ -9,16 +9,16 @@ class TestViennaCL < Test::Unit::TestCase
     v = [1,2,3]
     m0 = [v]*n
     m = ViennaCL::SFloatMatrix::create(m0)
-    assert_equal(6, (m * m)[0,0])
-    assert_equal(18, (m * m)[2,2])
+    assert_equal(6, (m.dot m)[0,0])
+    assert_equal(18, (m.dot m)[2,2])
     v = ViennaCL::SFloatVector::create([3,2,1])
-    assert_equal(10, (m * v)[0])
+    assert_equal(10, (m.dot v)[0])
 
     v0 = [1,2,3,4]
     m0 = [v0]*2
-    m = ViennaCL::SFloatMatrix::create(m0)
+    m = ViennaCL::DFloatMatrix::create(m0)
     v = ViennaCL::DFloatVector::create([1,1,1,1])
-#    assert_equal([10,10], (m * v).to_a)
+    assert_equal([10,10], (m.dot v).to_a)
   end
 
   def test_ocl
@@ -35,6 +35,6 @@ class TestViennaCL < Test::Unit::TestCase
     assert_equal([1,2,3],
                  ViennaCL::DFloatVector.from_narray(Numo::DFloat[1,2,3]).to_a)
 
-    p ViennaCL::SFloatMatrix.from_narray(Numo::SFloat[[1,2],[3,4]]).to_a
+    ViennaCL::SFloatMatrix.from_narray(Numo::SFloat[[1,2],[3,4]]).to_a
   end
 end

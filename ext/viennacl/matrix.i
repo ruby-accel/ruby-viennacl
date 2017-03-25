@@ -88,7 +88,7 @@ namespace RubyViennacl {
         (*$self)(i,j) = x;
       }
 
-      vector<T> __mul__(const vector<T>& v){
+      vector<T> dot(const vector<T>& v){
         return viennacl::linalg::prod((*$self), v);
       }
 
@@ -101,15 +101,23 @@ namespace RubyViennacl {
       }
 
       matrix<T> __sub__(const matrix<T>& m){
-        return (*$self) + m;
+        return (*$self) - m;
+      }
+
+      matrix<T> dot(const matrix<T>& m){
+        return viennacl::linalg::prod((*$self), m);
       }
 
       matrix<T> __mul__(const matrix<T>& m){
-        return viennacl::linalg::prod((*$self), m);
+        return viennacl::linalg::element_prod((*$self), m);
       }
 
       matrix<T> __mul__(const T x){
         return (*$self) * x;
+      }
+
+      matrix<T> __pow__(const matrix<T>& m){
+        return viennacl::linalg::element_pow((*$self), m);
       }
 
       matrix<T> trans(){
