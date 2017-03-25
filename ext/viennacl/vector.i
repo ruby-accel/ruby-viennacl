@@ -16,6 +16,7 @@ namespace RubyViennacl {
       static RubyViennacl::vector<T>* create(const std::vector<T>& m) {
         RubyViennacl::vector<T> *ret = new RubyViennacl::vector<T>(m.size());
         RubyViennacl::copy(m, *ret);
+        RubyViennacl::adjust_memory_usage(m.size()*sizeof(T));
         return ret;
       }
 
@@ -37,12 +38,14 @@ namespace RubyViennacl {
           RubyViennacl::vector<T> *ret = new RubyViennacl::vector<T>(len);
           memcpy(tmp.data(), data, len*sizeof(T));
           RubyViennacl::copy(tmp, *ret);
+          RubyViennacl::adjust_memory_usage(len*sizeof(T));
           return ret;
         }
       }
 
       const std::vector<T> to_a() {
-        std::vector<T> ret((*$self).size());
+        size_t size = (*$self).size();
+        std::vector<T> ret(size);
         RubyViennacl::copy((*$self), ret);
         return ret;
       }
@@ -60,22 +63,27 @@ namespace RubyViennacl {
       }
 
       vector<T> __add__(const vector<T>&v){
+        RubyViennacl::adjust_memory_usage(v.size()*sizeof(T));
         return (*$self) + v;
       }
 
       vector<T> __sub__(const vector<T>&v){
+        RubyViennacl::adjust_memory_usage(v.size()*sizeof(T));
         return (*$self) - v;
       }
 
-      vector<T> dot(const T &v){
-        return (*$self) * v;
+      vector<T> dot(const T &x){
+        RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
+        return (*$self) * x;
       }
 
       vector<T> __mul__(const vector<T>& v){
+        RubyViennacl::adjust_memory_usage(v.size()*sizeof(T));
         return viennacl::linalg::element_prod(*$self, v);
       }
 
       vector<T> __pow__(const vector<T> &v){
+        RubyViennacl::adjust_memory_usage(v.size()*sizeof(T));
         return viennacl::linalg::element_pow(*$self, v);
       }
 
@@ -101,10 +109,12 @@ namespace RubyViennacl {
       }
 
       vector<T> ceil(){
+        RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
         return viennacl::linalg::element_ceil(*$self);
       }
 
       vector<T> floor(){
+        RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
         return viennacl::linalg::element_floor(*$self);
       }
     }
@@ -112,6 +122,12 @@ namespace RubyViennacl {
 
   %template(DFloatVector) vector<double>;
   %template(SFloatVector) vector<float>;
+  %template( Int32Vector) vector<int32_t>;
+  %template( Int16Vector) vector<int16_t>;
+  %template(  Int8Vector) vector<char>;
+  %template(UInt32Vector) vector<uint32_t>;
+  %template(UInt16Vector) vector<uint16_t>;
+  %template( UInt8Vector) vector<unsigned char>;
 
   vector<double> fabs(const vector<double>& v);
   double fabs(double);

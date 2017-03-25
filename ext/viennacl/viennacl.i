@@ -1,11 +1,5 @@
 %module viennacl
 
-%include std_vector.i
-%template(StdVecDouble) std::vector<double>;
-%template(StdVecVecDouble) std::vector<std::vector<double> >;
-%template(StdVecFloat) std::vector<float>;
-%template(StdVecVecFloat) std::vector<std::vector<float> >;
-
 %{
 
 #include <numo/narray.h>
@@ -29,11 +23,6 @@
 
 #include "viennacl/coordinate_matrix.hpp"
 
-#include "vector.hpp"
-
-#include "rubyviennacl_base.hpp"
-
-
 namespace RubyViennacl {
   template<typename T>
   struct narray_traits{
@@ -50,9 +39,36 @@ namespace RubyViennacl {
     static VALUE type() { return numo_cSFloat; }
   };
 
+  static void adjust_memory_usage(ssize_t n) {
+#ifdef HAVE_rb_gc_adjust_memory_usage
+    rb_gc_adjust_memory_usage(n);
+#endif
+  }
 };
 
+#include "vector.hpp"
+#include "rubyviennacl_base.hpp"
+
 %}
+
+%include std_vector.i
+%template() std::vector<double>;
+%template() std::vector<std::vector<double> >;
+%template() std::vector<float>;
+%template() std::vector<std::vector<float> >;
+%template() std::vector<int32_t>;
+%template() std::vector<std::vector<int32_t> >;
+%template() std::vector<int16_t>;
+%template() std::vector<std::vector<int16_t> >;
+%template() std::vector<char>;
+%template() std::vector<std::vector<char> >;
+
+%template() std::vector<uint32_t>;
+%template() std::vector<std::vector<uint32_t> >;
+%template() std::vector<uint16_t>;
+%template() std::vector<std::vector<uint16_t> >;
+%template() std::vector<unsigned char>;
+%template() std::vector<std::vector<unsigned char> >;
 
 %include "vector.i"
 %include "matrix.i"

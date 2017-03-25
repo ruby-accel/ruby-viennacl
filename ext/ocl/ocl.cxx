@@ -2,5 +2,5 @@
 #include "ocl_wrap.inc"
 #else
 extern "C"
-void Init_ocl(void) {}
+void Init_OCL(void) {}
 #endif

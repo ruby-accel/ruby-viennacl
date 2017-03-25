@@ -45,6 +45,7 @@ namespace RubyViennacl {
       static RubyViennacl::matrix<T>* create(const std::vector<std::vector<T> >& m) {
         RubyViennacl::matrix<T> *ret = new RubyViennacl::matrix<T>(m.size(), m[0].size());
         RubyViennacl::copy(m, *ret);
+        RubyViennacl::adjust_memory_usage(m.size()*m[0].size()*sizeof(T));
         return ret;
       }
       
@@ -70,6 +71,7 @@ namespace RubyViennacl {
             memcpy(tmp[i].data(), data + i*rows*(sizeof(T)/sizeof(char)), rows*sizeof(T)); 
           }
           RubyViennacl::copy(tmp, *ret);
+          RubyViennacl::adjust_memory_usage(cols*rows*sizeof(T));
           return ret;
         }
       }
@@ -89,43 +91,53 @@ namespace RubyViennacl {
       }
 
       vector<T> dot(const vector<T>& v){
+        RubyViennacl::adjust_memory_usage($self->size2()*sizeof(T));
         return viennacl::linalg::prod((*$self), v);
       }
 
-      vector<T> trans_prod(const vector<T>& v){
+      vector<T> trans_dot(const vector<T>& v){
+        RubyViennacl::adjust_memory_usage($self->size1()*sizeof(T));
         return viennacl::linalg::prod(viennacl::trans(*$self), v);
       }
 
       matrix<T> __add__(const matrix<T>& m){
+        RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return (*$self) + m;
       }
 
       matrix<T> __sub__(const matrix<T>& m){
+        RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return (*$self) - m;
       }
 
       matrix<T> dot(const matrix<T>& m){
+        RubyViennacl::adjust_memory_usage($self->size2()*m.size1()*sizeof(T));
         return viennacl::linalg::prod((*$self), m);
       }
 
       matrix<T> __mul__(const matrix<T>& m){
+        RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return viennacl::linalg::element_prod((*$self), m);
       }
 
       matrix<T> __mul__(const T x){
+        RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return (*$self) * x;
       }
 
       matrix<T> __pow__(const matrix<T>& m){
+        RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return viennacl::linalg::element_pow((*$self), m);
       }
 
       matrix<T> trans(){
+        RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return viennacl::trans(*$self);
       }
 
       %newobject trans_;
       RubyViennacl::matrix_expression<const RubyViennacl::matrix_base<T>, const RubyViennacl::matrix_base<T>, RubyViennacl::op_trans>* trans_(){
+        RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return new RubyViennacl::matrix_expression<const RubyViennacl::matrix_base<T>, const RubyViennacl::matrix_base<T>, RubyViennacl::op_trans>((*$self), (*$self));
       }
 
@@ -133,4 +145,11 @@ namespace RubyViennacl {
   };
   %template(DFloatMatrix) matrix<double>;
   %template(SFloatMatrix) matrix<float>;
+  %template( Int32Matrix) matrix<int32_t>;
+  %template( Int16Matrix) matrix<int16_t>;
+  %template(  Int8Matrix) matrix<char>;
+  %template(UInt32Matrix) matrix<uint32_t>;
+  %template(UInt16Matrix) matrix<uint16_t>;
+  %template( UInt8Matrix) matrix<unsigned char>;
+
 };
