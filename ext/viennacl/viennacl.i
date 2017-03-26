@@ -71,7 +71,7 @@ namespace RubyViennacl {
   };
 
   static void adjust_memory_usage(ssize_t n) {
-#ifdef HAVE_rb_gc_adjust_memory_usage
+#ifdef HAVE_RB_GC_ADJUST_MEMORY_USAGE
     rb_gc_adjust_memory_usage(n);
 #endif
   }
