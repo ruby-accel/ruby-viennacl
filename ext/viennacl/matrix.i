@@ -16,23 +16,23 @@ namespace RubyViennacl {
         (*$self)(i,j) = x;
       }
 
-      compressed_matrix<T> __mul__(const compressed_matrix<T>& m){
+      compressed_matrix<T> dot(const compressed_matrix<T>& m){
         return viennacl::linalg::prod((*$self), m);
       }
 
-      RubyViennacl::matrix<T> __mul__(const RubyViennacl::matrix<T>& m){
+      RubyViennacl::matrix<T> dot(const RubyViennacl::matrix<T>& m){
         return viennacl::linalg::prod((*$self), m);
       }
 
-      RubyViennacl::vector<T> __mul__(const RubyViennacl::vector<T>& v){
+      RubyViennacl::vector<T> dot(const RubyViennacl::vector<T>& v){
         return viennacl::linalg::prod((*$self), v);
       }
 
     };
 
   };
-  %template(SpMatrixDouble) compressed_matrix<double>;
-  %template(SpMatrixFloat)  compressed_matrix<float>;
+  %template(DFloatSpMatrix) compressed_matrix<double>;
+  %template(SFloatSpMatrix) compressed_matrix<float>;
 
   template<class T>
   class matrix {
