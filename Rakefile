@@ -43,6 +43,6 @@ Rake::TestTask.new do |t|
 end
 desc "Run tests"
 
-task :swig => [:viennacl, :ocl]
+task :swig => ["swg:viennacl", "swg:ocl"]
 task :default => [:test]
 task :build => ["swg:viennacl", "swg:ocl", :compile]
