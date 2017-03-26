@@ -24,6 +24,7 @@
 #include "viennacl/coordinate_matrix.hpp"
 
 namespace RubyViennacl {
+
   template<typename T>
   struct narray_traits{
     static VALUE type() { return Qnil; }
@@ -37,6 +38,36 @@ namespace RubyViennacl {
   template<>
   struct narray_traits<float>{
     static VALUE type() { return numo_cSFloat; }
+  };
+
+  template<>
+  struct narray_traits<int32_t>{
+    static VALUE type() { return numo_cInt32; }
+  };
+
+  template<>
+  struct narray_traits<int16_t>{
+    static VALUE type() { return numo_cInt16; }
+  };
+
+  template<>
+  struct narray_traits<char>{
+    static VALUE type() { return numo_cInt8; }
+  };
+
+  template<>
+  struct narray_traits<uint32_t>{
+    static VALUE type() { return numo_cUInt32; }
+  };
+
+  template<>
+  struct narray_traits<uint16_t>{
+    static VALUE type() { return numo_cUInt16; }
+  };
+
+  template<>
+  struct narray_traits<unsigned char>{
+    static VALUE type() { return numo_cUInt8; }
   };
 
   static void adjust_memory_usage(ssize_t n) {
