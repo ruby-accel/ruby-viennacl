@@ -77,7 +77,7 @@ namespace RubyViennacl {
   }
 };
 
-#include "vector.hpp"
+#include "ops.hpp"
 #include "rubyviennacl_base.hpp"
 
 %}
@@ -103,6 +103,7 @@ namespace RubyViennacl {
 
 %include "vector.i"
 %include "matrix.i"
+%include "ops.i"
 %include "solver.i"
 
 namespace RubyViennacl {
