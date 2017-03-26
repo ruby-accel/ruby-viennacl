@@ -6,7 +6,7 @@ if gems.size > 1
   raise "multiple numo-narray gems found"
 end
 find_header("numo/narray.h", File.join(gems[0].gem_dir, "lib/numo/") )
-
+find_header("viennacl/version.hpp", File.join(File.dirname(File.expand_path(__FILE__)), "viennacl/"))
 have_func("rb_gc_adjust_memory_usage")
 
 backend_flag = ""
@@ -22,7 +22,5 @@ if arg_config("--enable-openmp")
   backend_flag += " -fopenmp -DVIENNACL_WITH_OPENMP "
 end
 
-viennacl_path = File.join(File.dirname(File.expand_path(__FILE__)), "viennacl/")
-
-$CXXFLAGS = ($CXXFLAGS || "") + " -std=c++11 -I #{viennacl_path} #{backend_flag} "
+$CXXFLAGS = ($CXXFLAGS || "") + " -std=c++11 #{backend_flag} "
 create_makefile('viennacl/ViennaCL')
