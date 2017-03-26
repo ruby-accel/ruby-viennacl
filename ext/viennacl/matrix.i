@@ -95,7 +95,7 @@ namespace RubyViennacl {
         return viennacl::linalg::prod((*$self), v);
       }
 
-      vector<T> trans_dot(const vector<T>& v){
+      vector<T> transpose_dot(const vector<T>& v){
         RubyViennacl::adjust_memory_usage($self->size1()*sizeof(T));
         return viennacl::linalg::prod(viennacl::trans(*$self), v);
       }
@@ -125,12 +125,17 @@ namespace RubyViennacl {
         return (*$self) * x;
       }
 
+      matrix<T> __div__(const matrix<T>& m){
+        RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
+        return viennacl::linalg::element_div((*$self), m);
+      }
+
       matrix<T> __pow__(const matrix<T>& m){
         RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return viennacl::linalg::element_pow((*$self), m);
       }
 
-      matrix<T> trans(){
+      matrix<T> transpose(){
         RubyViennacl::adjust_memory_usage($self->size1()*$self->size2()*sizeof(T));
         return viennacl::trans(*$self);
       }

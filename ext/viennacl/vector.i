@@ -63,35 +63,35 @@ namespace RubyViennacl {
       }
 
       vector<T> __add__(const vector<T>&v){
-        RubyViennacl::adjust_memory_usage(v.size()*sizeof(T));
+        RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
         return (*$self) + v;
       }
 
       vector<T> __sub__(const vector<T>&v){
-        RubyViennacl::adjust_memory_usage(v.size()*sizeof(T));
+        RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
         return (*$self) - v;
       }
 
-      vector<T> dot(const T &x){
+      vector<T> __mul__(const T &x){
         RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
         return (*$self) * x;
       }
 
       vector<T> __mul__(const vector<T>& v){
-        RubyViennacl::adjust_memory_usage(v.size()*sizeof(T));
+        RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
         return viennacl::linalg::element_prod(*$self, v);
       }
 
       vector<T> __pow__(const vector<T> &v){
-        RubyViennacl::adjust_memory_usage(v.size()*sizeof(T));
+        RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
         return viennacl::linalg::element_pow(*$self, v);
       }
 
-      /*
-      vector<T> __div__(const T &v){
+      vector<T> __div__(const vector<T> &v){
+        RubyViennacl::adjust_memory_usage($self->size()*sizeof(T));
         return viennacl::linalg::element_div(*$self, v);
       }
-      */
+
       T inner_prod(const vector<T>& v){
         return viennacl::linalg::inner_prod(*$self, v);
       }
