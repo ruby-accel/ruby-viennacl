@@ -61,17 +61,17 @@ namespace RubyViennacl {
             rb_raise(rb_eArgError, "NArray#ndim == 2 expected");
         } else {
           size_t* shp = RNARRAY_SHAPE(na);
-          size_t cols = shp[0];
-          size_t rows = shp[1];
+          size_t rows = shp[0];
+          size_t cols = shp[1];
           char*  data = RNARRAY_DATA_PTR(na);
-          std::vector<std::vector<T> > tmp(cols);
+          std::vector<std::vector<T> > tmp(rows);
           RubyViennacl::matrix<T> *ret = new RubyViennacl::matrix<T>(rows, cols);
-          for(int i=0; i < cols; i++) {
-            tmp[i].resize(rows);
-            memcpy(tmp[i].data(), data + i*rows*(sizeof(T)/sizeof(char)), rows*sizeof(T)); 
+          for(int i=0; i < rows; i++) {
+            tmp[i].resize(cols);
+            memcpy(tmp[i].data(), data + i*cols*(sizeof(T)/sizeof(char)), cols*sizeof(T));
           }
           RubyViennacl::copy(tmp, *ret);
-          RubyViennacl::adjust_memory_usage(cols*rows*sizeof(T));
+          RubyViennacl::adjust_memory_usage(rows*cols*sizeof(T));
           return ret;
         }
       }
