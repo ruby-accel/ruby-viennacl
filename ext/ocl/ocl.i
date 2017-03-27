@@ -10,10 +10,10 @@
 %inline %{
 namespace viennacl {
   namespace ocl {
-    struct viennacl::ocl::cpu_tag CPUTag = viennacl::ocl::cpu_tag();
-    struct viennacl::ocl::gpu_tag GPUTag = viennacl::ocl::gpu_tag();
-    struct viennacl::ocl::default_tag DefaultTag = viennacl::ocl::default_tag();
-    struct viennacl::ocl::accelerator_tag AcceleratorTag = viennacl::ocl::accelerator_tag();
+    const struct viennacl::ocl::cpu_tag CPUTag = viennacl::ocl::cpu_tag();
+    const struct viennacl::ocl::gpu_tag GPUTag = viennacl::ocl::gpu_tag();
+    const struct viennacl::ocl::default_tag DefaultTag = viennacl::ocl::default_tag();
+    const struct viennacl::ocl::accelerator_tag AcceleratorTag = viennacl::ocl::accelerator_tag();
   };
 };
 %}
@@ -104,7 +104,9 @@ namespace viennacl {
 
     const viennacl::ocl::context& viennacl::ocl::current_context();
     void set_context_device_type(long, viennacl::ocl::cpu_tag);
+    void set_context_device_type(long, viennacl::ocl::gpu_tag);
     const std::vector<viennacl::ocl::platform> get_platforms();
+    void switch_context(long);
 
   };
 };
