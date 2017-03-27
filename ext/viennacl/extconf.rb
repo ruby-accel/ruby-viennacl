@@ -1,5 +1,6 @@
 require "mkmf"
 have_library("c++") or have_library("stdc++")
+dir_config("OpenCL")
 
 gems = Gem::Specification.find_all_by_name("numo-narray")
 if gems.size > 1
@@ -11,14 +12,15 @@ have_func("rb_gc_adjust_memory_usage")
 
 backend_flag = ""
 
-if arg_config("--enable-cuda")
+if enable_config("cuda")
   require "mkmf-cu"
   backend_flag += " -DVIENNACL_WITH_CUDA -x cu "
-elsif arg_config("--enable-opencl") and (have_library("OpenCL") or have_framework("OpenCL"))
+elsif enable_config("opencl") and (have_library("OpenCL") or have_framework("OpenCL"))
   backend_flag += " -DVIENNACL_WITH_OPENCL "
 end
 
-if arg_config("--enable-openmp")
+if enable_config("openmp")
+  have_library("gomp") or have_library("iomp")
   backend_flag += " -fopenmp -DVIENNACL_WITH_OPENMP "
 end
 
