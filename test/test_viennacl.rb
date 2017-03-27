@@ -22,11 +22,13 @@ class TestViennaCL < Test::Unit::TestCase
   end
 
   def test_ocl
-    c = ViennaCL::OCL.current_context()
-    c.current_device().info()
-    ViennaCL::OCL.set_context_device_type(0, ViennaCL::OCL.CPUTag)
-    c.current_device().info()
-    ViennaCL::OCL::Platform.new.devices()
+    if ViennaCL.const_defined?(:OCL)
+      c = ViennaCL::OCL.current_context()
+      c.current_device().info()
+      ViennaCL::OCL.set_context_device_type(0, ViennaCL::OCL.CPUTag)
+      c.current_device().info()
+      ViennaCL::OCL::Platform.new.devices()
+    end
   end
 
   def test_from_narray
@@ -34,7 +36,6 @@ class TestViennaCL < Test::Unit::TestCase
                  ViennaCL::SFloatVector.from_narray(Numo::SFloat[1,2,3]).to_a)
     assert_equal([1,2,3],
                  ViennaCL::DFloatVector.from_narray(Numo::DFloat[1,2,3]).to_a)
-
-    ViennaCL::SFloatMatrix.from_narray(Numo::SFloat[[1,2],[3,4]]).to_a
+    ViennaCL::SFloatMatrix.from_narray(Numo::SFloat[[1,2, 3],[4,5,6]]).to_a
   end
 end
