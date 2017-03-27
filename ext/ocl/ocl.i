@@ -63,8 +63,13 @@ namespace viennacl {
       const std::string vendor();
       const std::string driver_version();
       bool double_support();
+      std::string double_support_extension();
 
+      std::string name();
+      std::string profile();
       const std::string info();
+      std::string full_info();
+
     };
 
     %rename(Platform) platform;
@@ -72,6 +77,7 @@ namespace viennacl {
     public:
       platform();
       ~platform();
+      std::string info();
       const std::vector<viennacl::ocl::device> devices();
     };
 
