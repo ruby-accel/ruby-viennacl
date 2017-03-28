@@ -38,4 +38,10 @@ class TestViennaCL < Test::Unit::TestCase
                  ViennaCL::DFloatVector.from_narray(Numo::DFloat[1,2,3]).to_a)
     ViennaCL::SFloatMatrix.from_narray(Numo::SFloat[[1,2, 3],[4,5,6]]).to_a
   end
+
+  def test_to_narray
+    ViennaCL::SFloatVector.from_narray(Numo::SFloat[1,2,3]).to_narray
+    ViennaCL::SFloatMatrix.from_narray(Numo::SFloat[[1,2, 3],[4,5,6]]).to_narray
+  end
+
 end
