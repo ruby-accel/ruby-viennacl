@@ -1,8 +1,9 @@
 %module viennacl
 
 %{
-
+extern "C" {
 #include <numo/narray.h>
+}
 #include <cstdint>
 #include <cmath>
 #include "viennacl/vector.hpp"

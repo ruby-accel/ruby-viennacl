@@ -64,18 +64,35 @@ namespace RubyViennacl {
           size_t rows = shp[0];
           size_t cols = shp[1];
           char*  data = RNARRAY_DATA_PTR(na);
-          std::vector<std::vector<T> > tmp(rows);
+          RubyViennacl::adjust_memory_usage(rows*cols*sizeof(T));
+
+          std::vector<std::vector<T> > tmp(rows, std::vector<T>(cols));
           RubyViennacl::matrix<T> *ret = new RubyViennacl::matrix<T>(rows, cols);
           for(int i=0; i < rows; i++) {
-            tmp[i].resize(cols);
             memcpy(tmp[i].data(), data + i*cols*(sizeof(T)/sizeof(char)), cols*sizeof(T));
           }
           RubyViennacl::copy(tmp, *ret);
-          RubyViennacl::adjust_memory_usage(rows*cols*sizeof(T));
           return ret;
         }
       }
-      
+
+      VALUE to_narray() {
+        size_t rows     = $self->size1();
+        size_t cols     = $self->size2();
+        size_t len      = rows*cols;
+        size_t shape[2] = {rows, cols};
+        VALUE  na       = rb_narray_new(RubyViennacl::narray_traits<T>::type(), 2, shape);
+        char*  data     = (char *) xmalloc(len*sizeof(T));
+        RNARRAY_DATA_PTR(na) = data;
+
+        std::vector<std::vector<T> > tmp(rows, std::vector<T>(cols));
+        RubyViennacl::copy(*$self, tmp);
+        for(int i=0; i < rows; i++) {
+          memcpy(data + i*cols*(sizeof(T)/sizeof(char)), tmp[i].data(), cols*sizeof(T));
+        }
+        return na;
+      }
+
       const std::vector<std::vector<T> > to_a() {
         std::vector<std::vector<T> > ret((*$self).size1(), std::vector<T>((*$self).size2()));
         RubyViennacl::copy(*$self, ret);

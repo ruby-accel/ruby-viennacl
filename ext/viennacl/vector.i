@@ -43,6 +43,18 @@ namespace RubyViennacl {
         }
       }
 
+      VALUE to_narray() {
+        size_t len      = $self->size();
+        size_t shape[1] = {len};
+        VALUE  na       = rb_narray_new(RubyViennacl::narray_traits<T>::type(), 1, shape);
+        char*  data     = (char *) xmalloc(len*sizeof(T));
+        std::vector<T> tmp(len);
+        RNARRAY_DATA_PTR(na) = data;
+        RubyViennacl::copy(*$self, tmp);
+        memcpy(data, tmp.data(), len*sizeof(T));
+        return na;
+      }
+
       const std::vector<T> to_a() {
         size_t size = (*$self).size();
         std::vector<T> ret(size);
